@@ -1,0 +1,2 @@
+# RedisUtil
+Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作！
