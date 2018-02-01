@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * 
  * @author WangFan
  * @date 2018-01-28 上午11:03:50
- * @version 1.0 (GitHub:http://www.baidu.com)
+ * @version 1.0 (GitHub: https://github.com/whvcse/RedisUtil )
  */
 public class RedisUtil {
 	private StringRedisTemplate redisTemplate;
