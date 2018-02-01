@@ -424,8 +424,15 @@ ZSet | 字符串成员(member)与浮点数分值(score)之间的有序映射，�
    
    
 ### 二、RedisTemplate和StringRedisTemplate
-#### 1.RedisTemplate：
+二者主要区别是他们使用的序列化类不一样，RedisTemplate使用的是JdkSerializationRedisSerializer， StringRedisTemplate使用的是StringRedisSerializer，两者的数据是不共通的。
 
+#### 1.RedisTemplate：
+   RedisTemplate使用的是JDK的序列化策略，向Redis存入数据会将数据先序列化成字节数组然后在存入Redis数据库，这个时候打开Redis查看的时候，你会看到你的数据不是以可读的形式展现的，而是以字节数组显示，类似下面：\xAC\xED\x00\x05t\x05sr\x00。 
+   所以使用RedisTemplate可以直接把一个java对象直接存储在redis里面。
+   
 #### 2.StringRedisTemplate:
+   StringRedisTemplate默认采用的是String的序列化策略，保存的key和value都是采用此策略序列化保存的。StringRedisTemplate是继承RedisTemplate的，这种对redis的操方式更优雅，因为RedisTemplate以字节数组的形式存储不利于管理，也不通用。
+ 
 
 ## 最后再说两句
+   我公司的项目里面使用的Redis工具类就是使用RedisTemplate来实现的，最开始发现存储的数据是乱码的，还以为是出错了，后来老员工说这是加密的数据，然后就没有再仔细研究过了，直到自己动手搭建项目的时候，看网上的sping集成redis配置，然后使用公司项目里面的RedisUtils，竟然报错了，最后发现我的配置文件里面写的是StringRedisTemplate，所以研究了一下这两个的区别，也把公司的Redis工具类重写了一遍。
