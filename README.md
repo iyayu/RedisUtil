@@ -1,8 +1,13 @@
 # RedisUtil
-Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作！
 
 [Redis知识补充](#知识补充) <br/>
 [Redis与Spring集成](#三redis与spring的集成)
+[查看RedisUtil源代码](https://github.com/whvcse/RedisUtil/RedisUtil.java)
+
+## 介绍
+最全的Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作，力求复合Redis的原生操作！
+分为六个部分：[keys命令操作](#一keys相关命令)、[String数据操作](#二String数据类型操作)、[Hash数据操作](#三Hash相关的操作)、[List数据操作](#四List相关的操作)、[Set数据操作](#五Set相关的操作)、[zSet数据操作](#六zset数据类型操作)。 
+ 
 
 ## 用法
 ### 一、keys相关命令
@@ -114,74 +119,74 @@ Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redi
 #### 1.添加操作：
 ```java
 //添加
-Long setAdd(String key, String... values);
+Long sAdd(String key, String... values);
 
 ```
 
 #### 2.获取操作：
 ```java
 //获取集合所有元素
-Set<String> setMembers(String key);
+Set<String> sMembers(String key);
 
 //获取集合大小
-Long setSize(String key);
+Long sSize(String key);
 
 //判断集合是否包含value
-Boolean setIsMember(String key, Object value);
+Boolean sIsMember(String key, Object value);
 
 //随机获取集合中的一个元素
-String setRandomMember(String key);
+String sRandomMember(String key);
 
 //随机获取集合count个元素
-List<String> setRandomMembers(String key, long count);
+List<String> sRandomMembers(String key, long count);
 
 //随机获取集合中count个元素并且去除重复的
-Set<String> setDistinctRandomMembers(String key, long count);
+Set<String> sDistinctRandomMembers(String key, long count);
 
 //使用迭代器获取元素
-Cursor<String> setScan(String key, ScanOptions options);
+Cursor<String> sScan(String key, ScanOptions options);
 
 //-------------------------------------------------------------------------------------
 
 //获取两个集合的交集
-Set<String> setIntersect(String key, String otherKey);
+Set<String> sIntersect(String key, String otherKey);
 
 //获取key集合与多个集合的交集
-Set<String> setIntersect(String key, Collection<String> otherKeys);
+Set<String> sIntersect(String key, Collection<String> otherKeys);
 
 //key集合与destKey集合的交集存储到destKey集合中
-Long setIntersectAndStore(String key, String otherKey, String destKey);
+Long sIntersectAndStore(String key, String otherKey, String destKey);
 
 //key集合与多个集合的交集存储到destKey集合中
-Long setIntersectAndStore(String key, Collection<String> otherKeys, String destKey)
+Long sIntersectAndStore(String key, Collection<String> otherKeys, String destKey)
 
 //--------------------------------------------------------------------------------------
 
 //获取两个集合的并集
-Set<String> setUnion(String key, String otherKeys);
+Set<String> sUnion(String key, String otherKeys);
 
 //获取key集合与多个集合的并集
-Set<String> setUnion(String key, Collection<String> otherKeys);
+Set<String> sUnion(String key, Collection<String> otherKeys);
 
 //key集合与otherKey集合的并集存储到destKey中
-Long setUnionAndStore(String key, String otherKey, String destKey);
+Long sUnionAndStore(String key, String otherKey, String destKey);
 
 //key集合与多个集合的并集存储到destKey中
-Long setUnionAndStore(String key, Collection<String> otherKeys, String destKey);
+Long sUnionAndStore(String key, Collection<String> otherKeys, String destKey);
 
 //-------------------------------------------------------------------------------------
 
 //获取两个集合的差集
-Set<String> setDifference(String key, String otherKey);
+Set<String> sDifference(String key, String otherKey);
 
 //获取key集合与多个集合的差集
-Set<String> setDifference(String key, Collection<String> otherKeys);
+Set<String> sDifference(String key, Collection<String> otherKeys);
 
 //key集合与otherKey集合的差集存储到destKey中
-Long setDifference(String key, String otherKey, String destKey);
+Long sDifference(String key, String otherKey, String destKey);
 
 //key集合与多个集合的差集存储到destKey中
-Long setDifference(String key, Collection<String> otherKeys, String destKey);
+Long sDifference(String key, Collection<String> otherKeys, String destKey);
 
 
 ```
@@ -189,13 +194,13 @@ Long setDifference(String key, Collection<String> otherKeys, String destKey);
 #### 3.修改操作：
 ```java
 //移除
-Long setRemove(String key, Object... values);
+Long sRemove(String key, Object... values);
 
 //随机移除一个元素
-String setPop(String key);
+String sPop(String key);
 
 //将key集合中value元素移到destKey集合中
-Boolean setMove(String key, String value, String destKey);
+Boolean sMove(String key, String value, String destKey);
 
 ```
 
@@ -203,10 +208,10 @@ Boolean setMove(String key, String value, String destKey);
 #### 1.添加操作：
 ```java
 //添加元素,有序集合是按照元素的score值由小到大排列
-Boolean zSetAdd(String key, String value, double score);
+Boolean zAdd(String key, String value, double score);
 
 //批量添加
-Long zSetAdd(String key, Set<TypedTuple<String>> values);
+Long zAdd(String key, Set<TypedTuple<String>> values);
 //TypedTuple使用
 TypedTuple<String> objectTypedTuple1 = new DefaultTypedTuple<String>(value, score);
 
@@ -215,93 +220,93 @@ TypedTuple<String> objectTypedTuple1 = new DefaultTypedTuple<String>(value, scor
 #### 2.获取操作：
 ```java
 //获取集合的元素, 从小到大排序, start开始位置, end结束位置
-Set<String> zSetRange(String key, long start, long end);
+Set<String> zRange(String key, long start, long end);
 
 //获取集合元素, 并且把score值也获取
-Set<TypedTuple<String>> zSetRangeWithScores(String key, long start, long end);
+Set<TypedTuple<String>> zRangeWithScores(String key, long start, long end);
 
 //根据Score值查询集合元素的值, 从小到大排序
-Set<String> zSetRangeByScore(String key, double min, double max);
+Set<String> zRangeByScore(String key, double min, double max);
 
 //根据Score值查询集合元素, 从小到大排序
-Set<TypedTuple<String>> zSetRangeByScoreWithScores(String key, double min, double max);
+Set<TypedTuple<String>> zRangeByScoreWithScores(String key, double min, double max);
 
 //根据Score值查询集合元素, 从小到大排序
-Set<TypedTuple<String>> zSetRangeByScoreWithScores(String key, double min, double max, long start, long end);
+Set<TypedTuple<String>> zRangeByScoreWithScores(String key, double min, double max, long start, long end);
 
 //----------------------------------------------------------------------------------
 
 //获取集合的元素, 从大到小排序
-Set<String> zSetReverseRange(String key, long start, long end);
+Set<String> zReverseRange(String key, long start, long end);
 
 //获取集合的元素, 从大到小排序, 并返回score值
-Set<TypedTuple<String>> zSetReverseRangeWithScores(String key, long start, long end);
+Set<TypedTuple<String>> zReverseRangeWithScores(String key, long start, long end);
 
 //根据Score值查询集合元素, 从大到小排序
-Set<String> zSetReverseRangeByScore(String key, double min, double max);
+Set<String> zReverseRangeByScore(String key, double min, double max);
 
 //根据Score值查询集合元素, 从大到小排序
-Set<TypedTuple<String>> zSetReverseRangeByScoreWithScores(String key, double min, double max);
+Set<TypedTuple<String>> zReverseRangeByScoreWithScores(String key, double min, double max);
 
 //
-Set<String> zSetReverseRangeByScore(String key, double min, double max, long start, long end);
+Set<String> zReverseRangeByScore(String key, double min, double max, long start, long end);
 
 //-----------------------------------------------------------------------------------
 
 //返回元素在集合的排名,有序集合是按照元素的score值由小到大排列
-Long zSetRank(String key, Object value);
+Long zRank(String key, Object value);
 
 //返回元素在集合的排名,按元素的score值由大到小排列
-Long zSetReverseRank(String key, Object value);
+Long zReverseRank(String key, Object value);
 
 //根据score值获取集合元素数量
-Long zSetCount(String key, double min, double max);
+Long zCount(String key, double min, double max);
 
 //获取集合大小
-Long zSetSize(String key);
+Long zSize(String key);
 
 //获取集合大小
-Long zSetZCard(String key);
+Long zZCard(String key);
 
 //获取集合中value元素的score值
-Double zSetScore(String key, Object value);
+Double zScore(String key, Object value);
 
 //------------------------------------------------------------------------------------
 
 //获取key和otherKey的并集并存储在destKey中
-Long zSetUnionAndStore(String key, String otherKey, String destKey);
+Long zUnionAndStore(String key, String otherKey, String destKey);
 
 //获取key和多个集合的并集并存储在destKey中
-Long zSetUnionAndStore(String key, Collection<String> otherKeys, String destKey)
+Long zUnionAndStore(String key, Collection<String> otherKeys, String destKey)
 
 //-----------------------------------------------------------------------------------
 
 //获取key和otherKey的交集并存储在destKey中
-Long zSetIntersectAndStore(String key, String otherKey, String destKey);
+Long zIntersectAndStore(String key, String otherKey, String destKey);
 
 //获取key和多个集合的交集并存储在destKey中
-Long zSetIntersectAndStore(String key, Collection<String> otherKeys, String destKey);
+Long zIntersectAndStore(String key, Collection<String> otherKeys, String destKey);
 
 //-----------------------------------------------------------------------------------
 
 //使用迭代器获取
-Cursor<TypedTuple<String>> zSetScan(String key, ScanOptions options);
+Cursor<TypedTuple<String>> zScan(String key, ScanOptions options);
 
 ```
 
 #### 3.修改操作：
 ```java
 //移除
-Long zSetRemove(String key, Object... values);
+Long zRemove(String key, Object... values);
 
 //增加元素的score值，并返回增加后的值
-Double zSetIncrementScore(String key, String value, double delta);
+Double zIncrementScore(String key, String value, double delta);
 
 //移除指定索引位置的成员
-Long zSetRemoveRange(String key, long start, long end);
+Long zRemoveRange(String key, long start, long end);
 
 //根据指定的score值的范围来移除成员
-Long zSetRemoveRangeByScore(String key, double min, double max);
+Long zRemoveRangeByScore(String key, double min, double max);
 
 ```
                    
