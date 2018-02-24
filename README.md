@@ -6,7 +6,7 @@
 
 ## 介绍
 最全的Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作，力求复合Redis的原生操作！
-分为六个部分：[keys命令操作](#一keys相关命令)、[String数据操作](#二String数据类型操作)、[Hash数据操作](#三Hash相关的操作)、[List数据操作](#四List相关的操作)、[Set数据操作](#五Set相关的操作)、[zSet数据操作](#六zset数据类型操作)。 
+分为六个部分：[keys命令操作](#一keys相关命令)、[String数据操作](#二string数据类型操作)、[Hash数据操作](#三hash相关的操作)、[List数据操作](#四list相关的操作)、[Set数据操作](#五set相关的操作)、[zSet数据操作](#六zset数据类型操作)。 
  
 
 ## 用法
