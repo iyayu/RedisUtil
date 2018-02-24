@@ -1,157 +1,116 @@
 # RedisUtil
 Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作！
 
+[Redis知识补充](#知识补充) <br/>
+[Redis与Spring集成](#Redis与Spring的集成)
+
 ## 用法
-### 一、String数据类型操作
-#### 1.添加操作：
-```java
-//
-boolean set(String key, String value);
+### 一、keys相关命令
 
-//timeout过期时间,unit时间单位(例:TimeUnit.SECONDS 秒)
-boolean set(String key, String value, long timeout, TimeUnit unit);
-
-//从指定位置开始覆写
-boolean set(String key, String value, long offset);
-
-//之前已经存在返回false,不存在返回true
-boolean setIfAbsent(String key, String value);
-
-//批量添加
-boolean multiSet(Map<String, String> maps);
-
-//之前已经存在返回false,不存在返回true
-boolean multiSetIfAbsent(Map<String, String> maps);
-
-//添加并且返回旧值
-String getAndSet(String key, String value);
-
-//设置ASCII码, 字符串'a'的ASCII码是97, 转为二进制是'01100001', 此方法是将二进制第offset位值变为value,true为1,false为0
-boolean setBit(String key, long offset, boolean value);
-
-```
+| 序号 | 方法                                                    | 描述                                          |
+|:----:|---------------------------------------------------------|-----------------------------------------------|
+|   1  | void delete(String key)                                 | key 存在时删除 key                            |
+|   2  | void delete(Collection keys)                            | 批量删除key                                   |
+|   3  | byte[] dump(String key)                                 | 序列化给定 key ，并返回被序列化的值           |
+|   4  | Boolean hasKey(String key)                              | 检查给定 key 是否存在                         |
+|   5  | Boolean expire(String key, long timeout, TimeUnit unit) | 设置过期时间                                  |
+|   6  | Boolean expireAt(String key, Date date)                 | 设置过期时间                                  |
+|   7  | Set<String> keys(String pattern)                        | 查找所有符合给定模式( pattern)的 key          |
+|   8  | Boolean move(String key, int dbIndex)                   | 将当前数据库的 key 移动到给定的数据库 db 当中 |
+|   9  | Boolean persist(String key)                             | 移除 key 的过期时间，key 将持久保持           |
+|  10  | Long getExpire(String key, TimeUnit unit)               | 返回 key 的剩余的过期时间                     |
+|  11  | Long getExpire(String key)                              | 返回 key 的剩余的过期时间                     |
+| 12   | String randomKey()                                      | 从当前数据库中随机返回一个 key                |
+| 13   | void rename(String oldKey, String newKey)               | 修改 key 的名称                               |
+| 14   | Boolean renameIfAbsent(String oldKey, String newKey)    | 仅当 newkey 不存在时，将 oldKey 改名为 newkey |
+| 15   | DataType type(String key)                               | 返回 key 所储存的值的类型                     |
    
-#### 2.查询操作：
-```java
-//
-String get(String key);
+-----
 
-//截取字符串, start开始位置, end结束位置
-String get(String key, long start, long end);
+### 二、String数据类型操作
 
-//批量获取
-List<String> multiGet(Collection<String> keys);
+| 序号 | 方法                                                              | 描述                                     |
+|:----:|-------------------------------------------------------------------|------------------------------------------|
+|   1  | String get(String key)                                            | 获取指定 key 的值                        |
+|   2  | String getRange(String key, long start, long end)                 | 返回 key 中字符串值的子字符              |
+|   3  | String getAndSet(String key, String value)                        | 将给定 key 的值设为 value ，并返回key<br/>的旧值(old value)|
+|   4  | Boolean getBit(String key, long offset)                           | 对 key 所储存的字符串值，获取指定偏移<br/>量上的位(bit)    |
+|   5  | List multiGet(Collection keys)                                    | 批量获取                                 |
+|  |  |  |
+|   6  | void set(String key, String value)                                | 设置指定 key 的值                        |
+|   7  | boolean setBit(String key, long offset, boolean value)            | 设置ASCII码, 字符串'a'的ASCII码是97, 转<br/>为二进制是'01100001', 此方法是将<br/>二进制第offset位值变为value |
+|   8  | void setEx(String key, String value, long timeout, TimeUnit unit) | 将值 value 关联到 key ，并将 key 的过期<br/>时间设为 timeout,unit:时间单位, <br/>天:TimeUnit.DAYS 小时:TimeUnit.HOURS <br/>分钟:TimeUnit.MINUTES,<br/>秒:TimeUnit.SECONDS <br/>毫秒:TimeUnit.MILLISECONDS |
+|   9  | boolean setIfAbsent(String key, String value)                     | 只有在 key 不存在时设置 key 的值         |
+|  10  | void setRange(String key, String value, long offset)              | 用 value 参数覆写给定 key 所储存的字符串<br/>值，从偏移量 offset 开始 |
+|  11  | void multiSet(Map<String,String> maps)                            | 批量添加                                 |
+|  12  | boolean multiSetIfAbsent(Map<String,String> maps)                 | 同时设置一个或多个 key-value 对，当且仅<br/>当所有给定 key 都不存在   |
+|  |  |  |
+|  13  | Integer append(String key, String value)                          | 追加到末尾                               |
+|  14  | Long incrBy(String key, long increment)                           | 增加(自增长), 负数则为自减               |
+|  15  | Double incrByFloat(String key, double increment)                  | 增加(自增长), 负数则为自减               |
+|  16  | Long size(String key)                                             | 获取字符串的长度                         |
 
-//获取字符串长度
-Long size(String key);
+------
 
-//获取第offset位ASCII码, 返回true表示1,返回false表示0
-Boolean getBit(String key, long offset);
+### 三、Hash相关的操作 
 
-```
-   
-#### 3.修改操作：
-```java
-//增加(自增)
-Long increment(String key, long value);
+| 序号 | 方法                                                           | 描述                                                |
+|:----:|----------------------------------------------------------------|-----------------------------------------------------|
+|   1  | Object hGet(String key, String field)                          | 获取存储在哈希表中指定字段的值                      |
+|   2  | Map hGetAll(String key)                                        | 获取所有给定字段的值                                |
+|   3  | List hMultiGet(String key, Collection fields)                  | 获取所有给定字段的值                                |
+|  |  |  |
+|   4  | void hPut(String key, String hashKey, String value)            | 添加字段                                            |
+|   5  | void hPutAll(String key, Map maps)                             | 添加多个字段                                        |
+|   6  | Boolean hPutIfAbsent(String key, String hashKey, String value) | 仅当hashKey不存在时才设置                           |
+|  |  |  |
+|   7  | Long hDelete(String key, Object... fields)                     | 删除一个或多个哈希表字段                            |
+|   8  | boolean hExists(String key, String field)                      | 查看哈希表 key 中，指定的字段是<br/>否存在               |
+|   9  | Long hIncrBy(String key, Object field, long increment)         | 为哈希表 key 中的指定字段的整数<br/>值加上增量 increment |
+|  10  | Double hIncrByFloat(String key, Object field, double delta)    | 为哈希表 key 中的指定字段的整数<br/>值加上增量 increment |
+|  11  | Set hKeys(String key)                                          | 获取所有哈希表中的字段                              |
+|  12  | Long hSize(String key)                                         | 获取哈希表中字段的数量                              |
+|  13  | List hValues(String key)                                       | 获取哈希表中所有值                                  |
+|  14  | Cursor hScan(String key, ScanOptions options)                  | 迭代哈希表中的键值对                                |
 
-//
-Double increment(String key, double value);
+---
 
-//拼接到末尾
-Integer append(String key, String value);
+### 四、List相关的操作
 
-```
-   
-### 二、list数据类型操作
-#### 1.添加操作：
-```java
-//在list头部添加
-Long listLeftPush(String key, String value);
+| 序号 | 方法                                                     | 描述                                |
+|:----:|----------------------------------------------------------|-------------------------------------|
+|   1  | String lIndex(String key, long index)                    | 通过索引获取列表中的元素            |
+|   2  | List lRange(String key, long start, long end)            | 获取列表指定范围内的元素            |
+|      |                                                          |                                     |
+|   3  | Long lLeftPush(String key, String value)                 | 存储在list头部                      |
+|   4  | Long lLeftPushAll(String key, String... value)           | 存储在list头部                      |
+|   5  | Long lLeftPushAll(String key, Collection value)          | 存储在list头部                      |
+|   6  | Long lLeftPushIfPresent(String key, String value)        | 当list存在的时候才加入              |
+|   7  | lLeftPush(String key, String pivot, String value)        | 如果pivot存在,再pivot前面添加       |
+|      |                                                          |                                     |
+|   8  | Long lRightPush(String key, String value)                | 存储在list尾部                      |
+|   9  | Long lRightPushAll(String key, String... value)          | 存储在list尾部                      |
+|  10  | Long lRightPushAll(String key, Collection value)         | 存储在list尾部                      |
+|  11  | Long lRightPushIfPresent(String key, String value)       | 当list存在的时候才加入              |
+|  12  | lRightPush(String key, String pivot, String value)       | 在pivot元素的右边添加值             |
+|      |                                                          |                                     |
+|  13  | void lSet(String key, long index, String value)          | 通过索引设置列表元素的值            |
+|      |                                                          |                                     |
+|  14  | String lLeftPop(String key)                              | 移出并获取列表的第一个元素          |
+|  15  | String lBLeftPop(String key, long timeout, TimeUnit unit) | 移出并获取列表的第一个元素， 如果列<br/>表没有元素会阻塞列表直到等待超时或<br/>发现可弹出元素为止 |
+|      |                                                          |                                     |
+|  16  | String lRightPop(String key)                             | 移除并获取列表最后一个元素          |
+| 17   | String lBRightPop(String key, long timeout, TimeUnit unit) | 移出并获取列表的最后一个元素， 如<br/>果列表没有元素会阻塞列表直到等待超时<br/>或发现可弹出元素为止   |
+| 18   | String lRightPopAndLeftPush(String sourceKey, String destinationKey) | 移除列表的最后一个元素，<br/>并将该元素添加到另一个列表并返回  |
+| 19   | String lBRightPopAndLeftPush(String sourceKey, String destinationKey,,long timeout, TimeUnit unit) | 从列表中弹出一个值，将弹出的元素插入到<br/>另外一个列表中并返回它； 如果列表没<br/>有元素会阻塞列表直到等待超时或发现可弹出<br/>元素为止 |
+|      |                                                          |                                     |
+| 20   | Long lRemove(String key, long index, String value)       | 删除集合中值等于value得元素         |
+| 21   | void lTrim(String key, long start, long end)             | 裁剪list                            |
+| 22   | Long lLen(String key)                                    | 获取列表长度                        |
 
-//在list头部批量添加
-Long listLeftPushAll(String key, String... value);
+-----
 
-//在list头部批量添加
-Long listLeftPushAll(String key, Collection<String> value);
-
-//当list存在的时候才添加
-Long listLeftPushIfPresent(String key, String value);
-
-//在pivot前面添加(如果pivo存在)
-Long listLeftPush(String key, String pivot, String value);
-
-
-//在list尾部添加
-Long listRightPush(String key, String value);
-
-//在list尾部批量添加
-Long listRightPushAll(String key, String... value);
-
-//在list尾部批量添加
-Long listRightPushAll(String key, Collection<String> value);
-
-//当list存在的时候才添加
-Long listRightPushIfPresent(String key, String value);
-
-//在pivot后面添加(如果pivot存在)
-Long listRightPush(String key, String pivot, String value);
-
-//在index位置设置
-boolean listSet(String key, long index, String value);
-
-
- 
-```
-
-#### 2.获取操作：
-```java
-//查询list, start开始位置, end结束位置(-1可查询所有)
-List<String> listRange(String key, long start, long end);
-
-//获取index位置的元素
-String listIndex(String key, long index);
-
-//查询list大小
-Long listSize(String key);
-
-
-```
-
-#### 3.修改操作：
-```java
-//裁剪list, start开始位置, end结束位置
-boolean listTrim(String key, long start, long end);
-
-/** 
- * 删除值等于value的元素, index=0, 删除所有值等于value的元素; 
- * index>0, 从头部开始删除第一个值等于value的元素;
- * index<0, 从尾部开始删除第一个值等于value的元素;
- */
-Long listRemove(String key, long index, String value);
-
-//删除最左边的元素
-String listLeftPop(String key);
-
-//删除最左边的元素, 如果集合没有元素就一直等待到有元素, timeout等待超时时间
-String listLeftPop(String key, long timeout, TimeUnit unit);
-
-//删除最右边元素
-String listRightPop(String key);
-
-//删除最右边元素，如果集合没有元素一直等待
-String listRightPop(String key, long timeout, TimeUnit unit);
-
-//删除最右边元素并且添加到另一个集合中, destinationKey另一个集合的key
-String listRightPopAndLeftPush(String sourceKey, String destinationKey);
-
-//同上, 如果不存在该元素,则一直等待,直到超时
-String listRightPopAndLeftPush(String sourceKey, String destinationKey, long timeout, TimeUnit unit);
-
-
-```
-
-### 三、set数据类型操作
+### 五、Set相关的操作
 #### 1.添加操作：
 ```java
 //添加
@@ -240,7 +199,7 @@ Boolean setMove(String key, String value, String destKey);
 
 ```
 
-### 四、zset数据类型操作
+### 六、zset数据类型操作
 #### 1.添加操作：
 ```java
 //添加元素,有序集合是按照元素的score值由小到大排列
@@ -346,67 +305,6 @@ Long zSetRemoveRangeByScore(String key, double min, double max);
 
 ```
 
-### 五、hash数据类型操作
-#### 1.添加操作：
-```java
-//添加
-boolean hashPut(String key, String hashKey, String value);
-
-//批量添加
-boolean hashPutAll(String key, Map<String, String> maps);
-
-//当hashKey不存在时才添加
-boolean hashPutIfAbsent(String key, String hashKey, String value);
-
-```
-
-#### 2.获取操作：
-```java
-//获取
-Object hashGet(String key, String hashKey);
-
-//批量获取
-List<Object> hashMultiGet(String key, Collection<Object> hashKeys);
-
-//获取key对应的所有hashKey
-Set<Object> hashKeys(String key);
-
-//获取key的所有hash值
-List<Object> hashValues(String key);
-
-//根据key获取所有hasyKey和值
-Map<Object, Object> hashEntries(String key);
-
-//是否存在hashKey
-boolean hashHasKey(String key, String hashKey);
-
-//获取hashKey的数量
-Long hashSize(String key);
-
-//使用迭代器获取
-Cursor<Entry<Object, Object>> hashScan(String key, ScanOptions options);
-//示例:
-Cursor<Map.Entry<Object, Object>> curosr = Cursor<Entry<Object, Object>> hashScan("key", ScanOptions.NONE);
-while ( curosr.hasNext() ) {
-  Map.Entry<Object, Object> entry = curosr.next();
-  System.out.println(entry.getKey()+":"+entry.getValue());
-}
-
-```
-
-#### 3.修改操作：
-```java
-//删除
-boolean hashDelete(String key, Object... hashKeys);
-
-//增加(自增)
-Long hashIncrement(String key, Object hashKey, long delta);
-
-//增加(自增)
-Double hashIncrement(String key, Object hashKey, double delta);
-
-```
-
 ## 知识补充
 ### 一、Redis知识补充
 Redis 可以存储键与5种不同数据结构类型之间的映射，这5种数据结构类型分别为：String（字符串）、List（列表）、Set（集合）、Hash（散列）和 Zset（有序集合）。
@@ -434,5 +332,34 @@ ZSet | 字符串成员(member)与浮点数分值(score)之间的有序映射，�
    StringRedisTemplate默认采用的是String的序列化策略，保存的key和value都是采用此策略序列化保存的。StringRedisTemplate是继承RedisTemplate的，这种对redis的操方式更优雅，因为RedisTemplate以字节数组的形式存储不利于管理，也不通用。
  
 
-## 最后再说两句
-   我公司的项目里面使用的Redis工具类就是使用RedisTemplate来实现的，最开始发现存储的数据是乱码的，还以为是出错了，后来老员工说这是加密的数据，然后就没有再仔细研究过了，直到自己动手搭建项目的时候，看网上的sping集成redis配置，然后使用公司项目里面的RedisUtils，竟然报错了，最后发现我的配置文件里面写的是StringRedisTemplate，所以研究了一下这两个的区别，也把公司的Redis工具类重写了一遍。
+## Redis与Spring的集成
+```java
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="300" />
+		<property name="maxTotal" value="600" />
+		<property name="maxWaitMillis" value="1000" />
+		<property name="testOnBorrow" value="true" />
+	</bean>
+
+	<bean id="jedisConnectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="127.0.0.1" />
+		<property name="password" value="" />
+		<property name="port" value="6379" />
+		<property name="poolConfig" ref="poolConfig" />
+	</bean>
+
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory" />
+	</bean>
+
+	<!-- 这里可以配置多个redis -->
+	<bean id="redisUtil" class="com.wf.ew.core.utils.RedisUtil">
+		<property name="redisTemplate" ref="redisTemplate" />
+	</bean>
+```
+使用RedisUtil工具类方法如下：
+```java
+   @Autowired
+   private RedisUtil redisUtil;
+```
