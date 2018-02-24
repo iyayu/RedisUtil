@@ -2,7 +2,7 @@
 Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作！
 
 [Redis知识补充](#知识补充) <br/>
-[Redis与Spring集成](#三、redis与spring的集成)
+[Redis与Spring集成](#三redis与spring的集成)
 
 ## 用法
 ### 一、keys相关命令
@@ -304,7 +304,9 @@ Long zSetRemoveRange(String key, long start, long end);
 Long zSetRemoveRangeByScore(String key, double min, double max);
 
 ```
-
+                   
+                
+           
 ## 知识补充
 ### 一、Redis知识补充
 Redis 可以存储键与5种不同数据结构类型之间的映射，这5种数据结构类型分别为：String（字符串）、List（列表）、Set（集合）、Hash（散列）和 Zset（有序集合）。
@@ -331,35 +333,38 @@ ZSet | 字符串成员(member)与浮点数分值(score)之间的有序映射，�
 #### 2.StringRedisTemplate:
    StringRedisTemplate默认采用的是String的序列化策略，保存的key和value都是采用此策略序列化保存的。StringRedisTemplate是继承RedisTemplate的，这种对redis的操方式更优雅，因为RedisTemplate以字节数组的形式存储不利于管理，也不通用。
  
-
+                 
+		           
+			                
 ### 三、Redis与Spring的集成
+1.集成配置
 ```java
-	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
-		<property name="maxIdle" value="300" />
-		<property name="maxTotal" value="600" />
-		<property name="maxWaitMillis" value="1000" />
-		<property name="testOnBorrow" value="true" />
-	</bean>
+<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+	<property name="maxIdle" value="300" />
+	<property name="maxTotal" value="600" />
+	<property name="maxWaitMillis" value="1000" />
+	<property name="testOnBorrow" value="true" />
+</bean>
 
-	<bean id="jedisConnectionFactory"
-		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-		<property name="hostName" value="127.0.0.1" />
-		<property name="password" value="" />
-		<property name="port" value="6379" />
-		<property name="poolConfig" ref="poolConfig" />
-	</bean>
+<bean id="jedisConnectionFactory"
+	class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+	<property name="hostName" value="127.0.0.1" />
+	<property name="password" value="WangFan01!" />
+	<property name="port" value="6379" />
+	<property name="poolConfig" ref="poolConfig" />
+</bean>
 
-	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
-		<property name="connectionFactory" ref="jedisConnectionFactory" />
-	</bean>
+<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+	<property name="connectionFactory" ref="jedisConnectionFactory" />
+</bean>
 
-	<!-- 这里可以配置多个redis -->
-	<bean id="redisUtil" class="com.wf.ew.core.utils.RedisUtil">
-		<property name="redisTemplate" ref="redisTemplate" />
-	</bean>
+<!-- 这里可以配置多个redis -->
+<bean id="redisUtil" class="com.wf.ew.core.utils.RedisUtil">
+	<property name="redisTemplate" ref="redisTemplate" />
+</bean>
 ```
-使用RedisUtil工具类方法如下：
+2.使用RedisUtil工具类方法如下：
 ```java
-   @Autowired
-   private RedisUtil redisUtil;
+@Autowired
+private RedisUtil redisUtil;
 ```
