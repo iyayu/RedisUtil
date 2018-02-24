@@ -2,7 +2,7 @@
 Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作！
 
 [Redis知识补充](#知识补充) <br/>
-[Redis与Spring集成](#Redis与Spring的集成)
+[Redis与Spring集成](#三、redis与spring的集成)
 
 ## 用法
 ### 一、keys相关命令
@@ -332,7 +332,7 @@ ZSet | 字符串成员(member)与浮点数分值(score)之间的有序映射，�
    StringRedisTemplate默认采用的是String的序列化策略，保存的key和value都是采用此策略序列化保存的。StringRedisTemplate是继承RedisTemplate的，这种对redis的操方式更优雅，因为RedisTemplate以字节数组的形式存储不利于管理，也不通用。
  
 
-## Redis与Spring的集成
+### 三、Redis与Spring的集成
 ```java
 	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<property name="maxIdle" value="300" />
