@@ -1,8 +1,8 @@
 # RedisUtil
 
 [Redis知识补充](#知识补充) <br/>
-[Redis与Spring集成](#三redis与spring的集成)
-[查看RedisUtil源代码](https://github.com/whvcse/RedisUtil/RedisUtil.java)
+[Redis与Spring集成](#三redis与spring的集成) <br/>
+[查看RedisUtil源代码](https://github.com/whvcse/RedisUtil/blob/master/RedisUtil.java)
 
 ## 介绍
 最全的Java操作Redis的工具类，使用StringRedisTemplate实现，封装了对Redis五种基本类型的各种操作，力求复合Redis的原生操作！
