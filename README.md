@@ -2,7 +2,8 @@
 
 #### 当前版本：1.1
     增加更全的方法，对以前的部分方法进行了规范命名，请放心替换成新版本。 
-    
+          
+          
 [Redis知识补充](#知识补充) <br/>
 [Redis与Spring集成](#三redis与spring的集成) <br/>
 [查看RedisUtil源代码](https://github.com/whvcse/RedisUtil/blob/master/RedisUtil.java)
