@@ -14,6 +14,9 @@
 分为六个部分：[keys命令操作](#一keys相关命令)、[String数据操作](#二string数据类型操作)、[Hash数据操作](#三hash相关的操作)、[List数据操作](#四list相关的操作)、[Set数据操作](#五set相关的操作)、[zSet数据操作](#六zset数据类型操作)。 
  
 
+## 注意 
+如果你比较关心为什么它没有提供存储Object的方法，请看这里介绍[存Object为什么不好？](#二redistemplate和stringredistemplate) 
+ 
 ## 用法
 ### 一、keys相关命令
 
@@ -338,7 +341,7 @@ ZSet | 字符串成员(member)与浮点数分值(score)之间的有序映射，�
 
 #### 1.RedisTemplate：
    RedisTemplate使用的是JDK的序列化策略，向Redis存入数据会将数据先序列化成字节数组然后在存入Redis数据库，这个时候打开Redis查看的时候，你会看到你的数据不是以可读的形式展现的，而是以字节数组显示，类似下面：\xAC\xED\x00\x05t\x05sr\x00。 
-   所以使用RedisTemplate可以直接把一个java对象直接存储在redis里面。
+   所以使用RedisTemplate可以直接把一个java对象直接存储在redis里面，但是存进去的数据是不易直观的读的，不通用的，建议最好不要直接存一个Object对象，可以变成Hash来存储，也可以转成json格式的数据来存储，在实际应用中也是很多都采用json格式来存储的。
    
 #### 2.StringRedisTemplate:
    StringRedisTemplate默认采用的是String的序列化策略，保存的key和value都是采用此策略序列化保存的。StringRedisTemplate是继承RedisTemplate的，这种对redis的操方式更优雅，因为RedisTemplate以字节数组的形式存储不利于管理，也不通用。
