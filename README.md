@@ -95,6 +95,11 @@
 |  12  | Long hSize(String key)                                         | 获取哈希表中字段的数量                   |
 |  13  | List hValues(String key)                                       | 获取哈希表中所有值                       |
 |  14  | Cursor hScan(String key, ScanOptions options)                  | 迭代哈希表中的键值对                     |
+|  | **引入序列化依赖** | <dependency>     <groupId>com.dyuproject.protostuff</groupId>     <artifactId>protostuff-core</artifactId>     <version>1.0.8</version> </dependency>  <dependency>     <groupId>com.dyuproject.protostuff</groupId>     <artifactId>protostuff-runtime</artifactId>     <version>1.0.8</version> </dependency> |
+| 15 | getListCache(final String key, Class<T> targetClass) | 获取缓存中的List，targetClass是序列化的类 |
+| 16 | putListCacheWithExpireTime(String key, List<T> objList, final long expireTime) | 把List放到缓存，expireTime是过期策略 |
+
+
 
 <br>
 
