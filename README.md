@@ -133,6 +133,9 @@ Long sAdd(String key, String... values);
 //获取集合所有元素
 Set<String> sMembers(String key);
 
+//判断一个元素是否存在与set中
+Sismember key member
+
 //获取集合大小
 Long sSize(String key);
 
