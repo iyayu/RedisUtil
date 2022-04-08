@@ -59,6 +59,8 @@
 |  14  | Long incrBy(String key, long increment)                           | 增加(自增长), 负数则为自减               |
 |  15  | Double incrByFloat(String key, double increment)                  | 增加(自增长), 负数则为自减               |
 |  16  | Long size(String key)                                             | 获取字符串的长度                         |
+|  17  | setnx                                                             | 添加一个String类型的键值对，前提是这个key不存在，否则不执行                       |
+|  18  | setex                                                             |添加String类型的键值对，并且指定有效期
 
 ------
 
@@ -132,6 +134,9 @@ Long sAdd(String key, String... values);
 ```java
 //获取集合所有元素
 Set<String> sMembers(String key);
+
+//判断一个元素是否存在与set中
+Sismember key member
 
 //获取集合大小
 Long sSize(String key);
