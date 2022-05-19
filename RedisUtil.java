@@ -1362,4 +1362,45 @@ public class RedisUtil {
 	public Cursor<TypedTuple<String>> zScan(String key, ScanOptions options) {
 		return redisTemplate.opsForZSet().scan(key, options);
 	}
+	
+	 /**
+     * 获取Redis List 序列化
+     * @param key
+     * @param targetClass
+     * @param <T>
+     * @return
+     */
+    public <T> List<T> getListCache(final String key, Class<T> targetClass) {
+        byte[] result = redisTemplate.execute(new RedisCallback<byte[]>() {
+            @Override
+            public byte[] doInRedis(RedisConnection connection) throws DataAccessException {
+                return connection.get(key.getBytes());
+            }
+        });
+        if (result == null) {
+            return null;
+        }
+        return ProtoStuffSerializerUtil.deserializeList(result, targetClass);
+    }
+
+    /***
+     * 将List 放进缓存里面
+     * @param key
+     * @param objList
+     * @param expireTime
+     * @param <T>
+     * @return
+     */
+    public <T> boolean putListCacheWithExpireTime(String key, List<T> objList, final long expireTime) {
+        final byte[] bkey = key.getBytes();
+        final byte[] bvalue = ProtoStuffSerializerUtil.serializeList(objList);
+        boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
+            @Override
+            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+                connection.setEx(bkey, expireTime, bvalue);
+                return true;
+            }
+        });
+        return result;
+    }
 }
